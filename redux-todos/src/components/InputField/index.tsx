@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { formContainer } from './styles'
+import { formContainer, inputContainer } from './styles'
 
 import { postRequest } from '../../app/requests'
 
@@ -37,7 +37,7 @@ function InputField() {
   }
 
   return (
-    <div>
+    <div css={inputContainer}>
       <form onSubmit={handleSubmit} css={formContainer}>
         <label htmlFor="todo">Todo</label>
         <input name="todo" type="text" />
