@@ -1,6 +1,6 @@
 const baseUrl = 'http://localhost:3000/'
 
-export const getRequest = (endpoint: string) => {
+export const getRequest = async (endpoint: string) => {
   return fetch(baseUrl + endpoint, {
     method: 'GET',
     headers: {
@@ -9,7 +9,7 @@ export const getRequest = (endpoint: string) => {
   })
 }
 
-export const postRequest = (body: any, endpoint: string) => {
+export const postRequest = async (body: any, endpoint: string) => {
   return fetch(baseUrl + endpoint, {
     method: 'POST',
     headers: {

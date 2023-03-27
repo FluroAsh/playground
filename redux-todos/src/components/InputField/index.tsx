@@ -1,8 +1,10 @@
-import * as React from 'react'
+import { useRef } from 'react'
 
 import { formContainer, inputContainer } from './styles'
 
 import { postRequest } from '../../app/requests'
+import { useAppDispatch } from '../../app/store'
+import { addTodo } from '../../slices/todos'
 
 interface FormElements extends HTMLFormControlsCollection {
   todo: HTMLInputElement
@@ -14,12 +16,17 @@ interface InputFieldElements extends HTMLFormElement {
 }
 
 function InputField() {
-  const handleSubmit = (event: React.FormEvent<InputFieldElements>) => {
+  const dispatch = useAppDispatch()
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  const handleSubmit = async (event: React.FormEvent<InputFieldElements>) => {
     event.preventDefault()
-    console.log('pretend I made a POST request')
+    if (!inputRef.current) return
 
     const { todo, description } = event.currentTarget.elements
-    postRequest(
+    if (!todo.value || !description.value) return
+
+    const response = await postRequest(
       {
         todo: todo.value,
         description: description.value,
@@ -28,11 +35,19 @@ function InputField() {
       'todos'
     )
 
-    console.log(event.currentTarget.elements.todo.value)
-    console.log(event.currentTarget.elements.description.value)
+    if (response.ok) {
+      dispatch(
+        addTodo({
+          todo: todo.value,
+          description: description.value,
+          completed: false
+        })
+      )
+    }
 
-    // clear the form after submission
+    // clear the form & change focus
     todo.value = ''
+    inputRef.current.focus()
     description.value = ''
   }
 
@@ -40,7 +55,7 @@ function InputField() {
     <div css={inputContainer}>
       <form onSubmit={handleSubmit} css={formContainer}>
         <label htmlFor="todo">Todo</label>
-        <input name="todo" type="text" />
+        <input name="todo" type="text" ref={inputRef} />
 
         <label htmlFor="description">description</label>
         <input name="description" type="text" />

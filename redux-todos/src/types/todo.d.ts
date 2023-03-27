@@ -1,4 +1,4 @@
-export type TodoProps = {
+export interface ITodo {
   id: number
   todo: string
   description: string
