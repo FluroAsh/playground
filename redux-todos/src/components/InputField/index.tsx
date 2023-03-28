@@ -1,10 +1,12 @@
 import { useRef } from 'react'
+import { Dispatch } from 'redux'
+import { connect } from 'react-redux'
 
 import { formContainer, inputContainer } from './styles'
 
-import { postRequest } from '../../app/requests'
-import { useAppDispatch } from '../../app/store'
 import { addTodo } from '../../slices/todos'
+import { postRequest } from '../../app/requests'
+import { TodoProps } from '../Todo'
 
 interface FormElements extends HTMLFormControlsCollection {
   todo: HTMLInputElement
@@ -15,16 +17,19 @@ interface InputFieldElements extends HTMLFormElement {
   readonly elements: FormElements
 }
 
-function InputField() {
-  const dispatch = useAppDispatch()
+interface IInputField {
+  addTodo: (todo: TodoProps) => void
+}
+
+const InputField: React.FC<IInputField> = ({ addTodo }) => {
   const inputRef = useRef<HTMLInputElement>(null)
 
   const handleSubmit = async (event: React.FormEvent<InputFieldElements>) => {
     event.preventDefault()
-    if (!inputRef.current) return
+    if (!inputRef.current) return // narrow to exclude null
 
     const { todo, description } = event.currentTarget.elements
-    if (!todo.value || !description.value) return
+    if (!todo.value || !description.value) return // narrow to string
 
     const response = await postRequest(
       {
@@ -36,19 +41,17 @@ function InputField() {
     )
 
     if (response.ok) {
-      dispatch(
-        addTodo({
-          todo: todo.value,
-          description: description.value,
-          completed: false
-        })
-      )
+      addTodo({
+        todo: todo.value,
+        description: description.value,
+        completed: false
+      })
     }
 
     // clear the form & change focus
     todo.value = ''
-    inputRef.current.focus()
     description.value = ''
+    inputRef.current.focus()
   }
 
   return (
@@ -66,4 +69,9 @@ function InputField() {
   )
 }
 
-export default InputField
+// Maps the action creator to the `addTodo` prop on the component
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  addTodo: (todo: TodoProps) => dispatch(addTodo(todo))
+})
+
+export default connect(null, mapDispatchToProps)(InputField)

@@ -1,9 +1,9 @@
 import { ITodo } from '../../types/todo'
 import { todoBody } from './styles'
 
-type TodoProps = Omit<ITodo, 'id'>
+export type TodoProps = Omit<ITodo, 'id'>
 
-function Todo({ todo, description, completed }: TodoProps) {
+const Todo = ({ todo, description, completed }: TodoProps) => {
   const todoTitle = todo.length > 14 ? todo.slice(0, 14) + '...' : todo
   return (
     <div css={todoBody}>

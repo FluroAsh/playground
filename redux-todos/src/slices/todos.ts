@@ -1,8 +1,9 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { ITodo } from '../types/todo'
+import { TodoProps } from '../components/Todo'
 
 export interface TodoState {
-  todos: Array<ITodo> | Array<any>
+  todos: Array<ITodo>
   loading: boolean
 }
 
@@ -17,7 +18,7 @@ const todoSlice = createSlice({
   name: 'todo',
   initialState,
   reducers: {
-    addTodo: (state, action) => {
+    addTodo: (state, action: PayloadAction<TodoProps>) => {
       state.todos?.push(action.payload)
     },
     initializeTodos: (state, action) => {

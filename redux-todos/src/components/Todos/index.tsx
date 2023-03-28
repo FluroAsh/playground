@@ -1,5 +1,4 @@
 import Todo from '../Todo'
-import { ITodo } from '../../types/todo'
 
 import { todosContainer } from './styles'
 
@@ -22,8 +21,9 @@ const Todos = () => {
   if (!todos.length) return <Container>No todos</Container>
 
   return (
+    // TODO: Change to use grid... sm-1, md-(2-3), lg-4
     <div css={todosContainer}>
-      {todos.map(({ id, todo, description, completed }: ITodo) => (
+      {todos.map(({ id, todo, description, completed }) => (
         <Todo
           key={id}
           todo={todo}
