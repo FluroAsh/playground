@@ -1,4 +1,4 @@
-import { ITodo } from '../../types/todo'
+import type { ITodo } from '../../types/todo'
 import { todoBody } from './styles'
 
 export type TodoProps = Omit<ITodo, 'id'>

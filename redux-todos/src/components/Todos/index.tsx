@@ -1,11 +1,12 @@
-import Todo from '../Todo'
+import Todo, { TodoProps } from '../Todo'
 
 import { todosContainer } from './styles'
 
 import { useSelector } from 'react-redux'
 import { RootState } from '../../app/store'
+import { ITodo } from '../../types/todo'
 
-const Container = ({ children }: { children: string }) => (
+const Container = ({ children }: { children: JSX.Element | string }) => (
   <div
     css={todosContainer}
     style={{ display: 'flex', justifyContent: 'center' }}
@@ -23,7 +24,7 @@ const Todos = () => {
   return (
     // TODO: Change to use grid... sm-1, md-(2-3), lg-4
     <div css={todosContainer}>
-      {todos.map(({ id, todo, description, completed }) => (
+      {todos.map(({ id, todo, description, completed }: ITodo) => (
         <Todo
           key={id}
           todo={todo}

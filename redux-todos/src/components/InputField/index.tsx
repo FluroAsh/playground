@@ -6,7 +6,7 @@ import { formContainer, inputContainer } from './styles'
 
 import { addTodo } from '../../slices/todos'
 import { postRequest } from '../../app/requests'
-import { TodoProps } from '../Todo'
+import type { TodoProps } from '../Todo'
 
 interface FormElements extends HTMLFormControlsCollection {
   todo: HTMLInputElement
