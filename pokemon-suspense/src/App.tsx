@@ -16,6 +16,9 @@ function App() {
   const [dittoData, setDittoData] = useState<any>(null)
   const [pikachuData, setPikachuData] = useState<any>(null)
 
+  // TODO: Data fetching should happen inside an individual component
+  // This way we can track the data fetching state and handle it in the
+  // suspense boundary.
   useEffect(() => {
     const fetchDitto = () =>
       setTimeout(async () => fetchPokemon('ditto', setDittoData), 1000)
@@ -31,19 +34,18 @@ function App() {
   console.log('loading...')
   return (
     <div className="App" style={{ display: 'flex', flexDirection: 'row' }}>
-      <div className="pokemon-container">
-        <h1>Ditto</h1>
-        <Suspense fallback={<Skeleton />}>
+      {/* TODO: Render the components at the same time regardless of when their data fetching completes */}
+      <Suspense fallback={<div>Loading...</div>}>
+        <div className="pokemon-container">
+          <h1>Ditto</h1>
           <Pokemon data={dittoData} />
-        </Suspense>
-      </div>
+        </div>
 
-      <div className="pokemon-container">
-        <h1>Pikachu</h1>
-        <Suspense fallback={<Skeleton />}>
+        <div className="pokemon-container">
+          <h1>Pikachu</h1>
           <Pokemon data={pikachuData} />
-        </Suspense>
-      </div>
+        </div>
+      </Suspense>
     </div>
   )
 }
