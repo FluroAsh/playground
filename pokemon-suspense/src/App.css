@@ -1,65 +1,21 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(1) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }
 
 .pokemon-container {
-  min-height: 341.917px;
+  min-height: 300px;
   min-width: 200px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
 }
 
@@ -72,17 +28,44 @@
   min-width: 200px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  /* justify-content: center; */
   align-items: center;
 }
+.skele-container .skele-div {
+  height: 12px;
+  margin: 6px 0;
+  width: 100px;
+  background: #e1e1e1;
+  border-radius: 5px;
+  animation: shimmer 3s infinite;
+}
+.skele-div:first-child {
+  width: 50px;
+}
 .skele-container > .skele-img {
-  background: #1f1f1f;
-  height: 150px;
-  width: 150px;
+  background: #e1e1e1;
+  height: 50px;
+  width: 50px;
+  padding: 50px;
+  border-radius: 5px;
+  margin-top: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
+  animation: shimmer 3s infinite;
 }
 .skele-container > .skele-container {
   margin-bottom: -20px;
+}
+
+@keyframes shimmer {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.5;
+  }
 }

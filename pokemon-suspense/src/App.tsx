@@ -5,9 +5,9 @@ const Pokemon = lazy(() => import('./components/Pokemon'))
 
 export const Skeleton = () => (
   <div className="skele-container">
-    <div className="skele-div">Name</div>
-    <div className="skele-div">Pokedex</div>
-    <div className="skele-img">Image</div>
+    <div className="skele-div" />
+    <div className="skele-div" />
+    <div className="skele-img" />
   </div>
 )
 
