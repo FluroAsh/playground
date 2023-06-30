@@ -1,3 +1,4 @@
+/* Layout */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -10,6 +11,7 @@
   text-align: center;
 }
 
+/* Pokemon Content */
 .pokemon-container {
   min-height: 300px;
   min-width: 200px;
@@ -19,16 +21,19 @@
   align-items: center;
 }
 
+.pokemon-container > h1 {
+  margin-bottom: 20px;
+}
+
 .pokemon-container:first-child {
   margin-right: 100px;
 }
 
+/* Skeleton Loading */
 .skele-container {
-  min-height: 237px;
   min-width: 200px;
   display: flex;
   flex-direction: column;
-  /* justify-content: center; */
   align-items: center;
 }
 .skele-container .skele-div {

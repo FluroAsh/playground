@@ -1,5 +1,6 @@
 import { Suspense, lazy, useState, useEffect } from 'react'
 import './App.css'
+import { fetchPokemon } from './utils'
 
 const Pokemon = lazy(() => import('./components/Pokemon'))
 
@@ -16,24 +17,14 @@ function App() {
   const [pikachuData, setPikachuData] = useState<any>(null)
 
   useEffect(() => {
-    const fetchDitto = () => {
-      setTimeout(async () => {
-        const data = await fetch('https://pokeapi.co/api/v2/pokemon/ditto')
-        const response = await data.json()
-        setDittoData(response)
-      }, 6000)
-    }
+    const fetchDitto = () =>
+      setTimeout(async () => fetchPokemon('ditto', setDittoData), 1000)
     fetchDitto()
   }, [])
 
   useEffect(() => {
-    const fetchPikachu = () => {
-      setTimeout(async () => {
-        const data = await fetch('https://pokeapi.co/api/v2/pokemon/pikachu')
-        const response = await data.json()
-        setPikachuData(response)
-      }, 2000)
-    }
+    const fetchPikachu = () =>
+      setTimeout(async () => fetchPokemon('pikachu', setPikachuData), 2000)
     fetchPikachu()
   }, [])
 
