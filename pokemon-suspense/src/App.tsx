@@ -1,51 +1,86 @@
-import { Suspense, lazy, useState, useEffect } from 'react'
+import { Suspense } from 'react'
 import './App.css'
-import { fetchPokemon } from './utils'
 
-const Pokemon = lazy(() => import('./components/Pokemon'))
+import Pokemon from './components/Pokemon'
 
-export const Skeleton = () => (
+export const CardSkeleton: React.FC<{ children?: React.ReactNode }> = ({
+  children
+}) => (
   <div className="skele-container">
+    {children}
     <div className="skele-div" />
     <div className="skele-div" />
     <div className="skele-img" />
   </div>
 )
 
+export const GlobalSkeleton = () => (
+  <div className="global-skeleton">
+    <div className="card-skeletons-container">
+      <CardSkeleton>
+        <h1>Ditto</h1>
+      </CardSkeleton>
+
+      <CardSkeleton>
+        <h1>Pikachu</h1>
+      </CardSkeleton>
+    </div>
+  </div>
+)
+
 function App() {
-  const [dittoData, setDittoData] = useState<any>(null)
-  const [pikachuData, setPikachuData] = useState<any>(null)
+  const globalValue = localStorage.getItem('global')
+  const isGlobal = globalValue ? JSON.parse(globalValue) : false
 
-  // TODO: Data fetching should happen inside an individual component
-  // This way we can track the data fetching state and handle it in the
-  // suspense boundary.
-  useEffect(() => {
-    const fetchDitto = () =>
-      setTimeout(async () => fetchPokemon('ditto', setDittoData), 1000)
-    fetchDitto()
-  }, [])
-
-  useEffect(() => {
-    const fetchPikachu = () =>
-      setTimeout(async () => fetchPokemon('pikachu', setPikachuData), 2000)
-    fetchPikachu()
-  }, [])
-
-  console.log('loading...')
   return (
-    <div className="App" style={{ display: 'flex', flexDirection: 'row' }}>
-      {/* TODO: Render the components at the same time regardless of when their data fetching completes */}
-      <Suspense fallback={<div>Loading...</div>}>
-        <div className="pokemon-container">
-          <h1>Ditto</h1>
-          <Pokemon data={dittoData} />
-        </div>
+    <div className="App">
+      {isGlobal ? (
+        <div>
+          <Suspense fallback={<GlobalSkeleton />}>
+            <div className="pokemon-container">
+              <h1>Ditto</h1>
+              <Pokemon name="ditto" timeout={2000} />
+            </div>
 
-        <div className="pokemon-container">
-          <h1>Pikachu</h1>
-          <Pokemon data={pikachuData} />
+            <div className="pokemon-container">
+              <h1>Pikachu</h1>
+              <Pokemon name="pikachu" timeout={5000} />
+            </div>
+          </Suspense>
         </div>
-      </Suspense>
+      ) : (
+        <div>
+          <div className="pokemon-container">
+            <h1>Ditto</h1>
+            <Suspense fallback={<CardSkeleton />}>
+              <Pokemon name="ditto" timeout={2000} />
+            </Suspense>
+          </div>
+
+          <div className="pokemon-container">
+            <h1>Pikachu</h1>
+            <Suspense fallback={<CardSkeleton />}>
+              <Pokemon name="pikachu" timeout={5000} />
+            </Suspense>
+          </div>
+        </div>
+      )}
+      <button
+        onClick={() => {
+          localStorage.setItem('global', 'true')
+          window.location.reload()
+        }}
+      >
+        Suspend Both
+      </button>
+      <button
+        onClick={() => {
+          localStorage.setItem('global', 'false')
+          window.location.reload()
+        }}
+      >
+        Suspend Each
+      </button>
     </div>
   )
 }

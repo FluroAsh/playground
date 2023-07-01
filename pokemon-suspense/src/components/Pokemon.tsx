@@ -1,12 +1,26 @@
-import { Skeleton } from '../App'
 import { motion } from 'framer-motion'
+import useSWR from 'swr'
+import { fetchPokemon } from '../utils'
 
-const Pokemon: React.FC<{ data: any }> = ({ data }) => {
-  // TODO: Should be using a data fetching library like react-query
-  // or useSWR to opt into suspense. This is why it's not really working here.
-  if (!data) return <Skeleton />
+const Pokemon: React.FC<{ name: string; timeout: number }> = ({
+  name,
+  timeout
+}) => {
+  // NOTE: timeout can vary per Pokemon, but we'll always wait for the last request to complete
+  // before rendering all the Pokemon cards
+  // (as per our Suspense fallback in App.tsx when isGlobal is true)
+  const fetcher = fetchPokemon(timeout)
 
-  const { id, name, sprites } = data
+  const { data, error } = useSWR(
+    `https://pokeapi.co/api/v2/pokemon/${name.toLowerCase()}`,
+    fetcher,
+    {
+      suspense: true
+    }
+  )
+
+  if (error) return <pre>{error.message}</pre>
+
   const capitalize = (word: string) => word[0].toUpperCase() + word.slice(1)
 
   const variants = {
@@ -28,12 +42,12 @@ const Pokemon: React.FC<{ data: any }> = ({ data }) => {
         animate="visible"
         style={{ marginBottom: '-20px' }}
       >
-        <p>{capitalize(name)}!</p>
-        <p>Pokedex #: {id}</p>
+        <p>{capitalize(data.name)}!</p>
+        <p>Pokedex #: {data.id}</p>
         <motion.img
           variants={variants}
           transition={transition}
-          src={sprites['front_default']}
+          src={data.sprites['front_default']}
           height={150}
         />
       </motion.div>
