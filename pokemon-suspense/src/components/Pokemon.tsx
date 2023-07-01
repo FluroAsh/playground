@@ -1,10 +1,23 @@
 import { motion } from 'framer-motion'
 import useSWR from 'swr'
+import { fetchPokemon } from '../utils'
 
-const Pokemon: React.FC<{ name: string }> = ({ name }) => {
-  const { data, error } = useSWR(`https://pokeapi.co/api/v2/pokemon/${name}`, {
-    suspense: true
-  })
+const Pokemon: React.FC<{ name: string; timeout: number }> = ({
+  name,
+  timeout
+}) => {
+  // NOTE: timeout can vary per Pokemon, but we'll always wait for the last request to complete
+  // before rendering all the Pokemon cards
+  // (as per our Suspense fallback in App.tsx when isGlobal is true)
+  const fetcher = fetchPokemon(timeout)
+
+  const { data, error } = useSWR(
+    `https://pokeapi.co/api/v2/pokemon/${name.toLowerCase()}`,
+    fetcher,
+    {
+      suspense: true
+    }
+  )
 
   if (error) return <pre>{error.message}</pre>
 

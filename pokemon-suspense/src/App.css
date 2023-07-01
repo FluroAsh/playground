@@ -4,11 +4,17 @@
   margin: 0;
   padding: 0;
 }
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
 }
 
 /* Pokemon Content */
@@ -44,7 +50,7 @@
   border-radius: 5px;
   animation: shimmer 3s infinite;
 }
-.skele-div:first-child {
+.skele-container > .skele-div:first-child {
   width: 50px;
 }
 .skele-container > .skele-img {
@@ -63,6 +69,23 @@
   margin-bottom: -20px;
 }
 
+/* Global Skeleton */
+.card-skeletons__container {
+  display: flex;
+  align-items: flex-start;
+  min-height: 300px;
+}
+.card-skeletons__container > .skele-container > h1:nth-child(1) {
+  margin-bottom: 20px;
+}
+.card-skeletons__container > .skele-container > div:nth-child(2) {
+  width: 50px;
+}
+.card-skeletons__container > .skele-container:first-child {
+  margin-right: 100px;
+  margin-bottom: -20px;
+}
+
 @keyframes shimmer {
   0% {
     opacity: 0.5;
@@ -73,4 +96,8 @@
   100% {
     opacity: 0.5;
   }
+}
+
+button:last-child {
+  margin-top: 20px;
 }
