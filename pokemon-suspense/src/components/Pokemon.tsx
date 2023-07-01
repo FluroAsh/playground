@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
-import useSWR from 'swr'
 import { fetchPokemon } from '../utils'
+import { useRequest } from '../useRequest'
 
 const Pokemon: React.FC<{ name: string; timeout: number }> = ({
   name,
@@ -11,13 +11,7 @@ const Pokemon: React.FC<{ name: string; timeout: number }> = ({
   // (as per our Suspense fallback in App.tsx when isGlobal is true)
   const fetcher = fetchPokemon(timeout)
 
-  const { data, error } = useSWR(
-    `https://pokeapi.co/api/v2/pokemon/${name.toLowerCase()}`,
-    fetcher,
-    {
-      suspense: true
-    }
-  )
+  const { data, error } = useRequest(`/pokemon`, fetcher, name.toLowerCase())
 
   if (error) return <pre>{error.message}</pre>
 
