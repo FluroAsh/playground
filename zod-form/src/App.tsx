@@ -3,24 +3,44 @@ import './App.css'
 
 import { z } from 'zod'
 
-function App() {
-  const formSchema = z.object({
-    name: z.string().min(3).max(10),
-    email: z.string().email(),
-    age: z.number().min(18).max(99)
-  })
+import { ERRORS } from './constants'
 
-  const [formData, setFormData] = useState<{
-    name: string
-    email: string
-    age: string
-  }>({
+const formSchema = z.object({
+  name: z.string().min(3, ERRORS.name.min).max(10, ERRORS.name.max),
+  email: z.string().email(ERRORS.email.invalid),
+  age: z
+    .string()
+    .regex(/^\d{1,2}$/, ERRORS.age.invalid)
+    .refine((age) => {
+      const ageNum = parseInt(age)
+      return ageNum >= 18 && ageNum <= 99
+    }, ERRORS.age.range)
+})
+
+type FormSchema = z.infer<typeof formSchema>
+type FormKeys = keyof FormSchema
+type Errors = Record<FormKeys, string[]>
+
+const generateErrors = (key: FormKeys, errors: Errors) => {
+  const errorMessages: React.ReactNode[] = []
+  errors[key].forEach((message) => {
+    errorMessages.push(<p className="error-message">{message}</p>)
+  })
+  return errorMessages
+}
+
+function App() {
+  const [formData, setFormData] = useState<FormSchema>({
     name: '',
     email: '',
     age: ''
   })
 
-  const [errors, setErrors] = useState<string[]>([])
+  const [errors, setErrors] = useState<{
+    name?: string[]
+    email?: string[]
+    age?: string[]
+  }>({})
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -31,22 +51,22 @@ function App() {
     e.preventDefault()
 
     try {
-      console.log({ formData })
-      formSchema.parse(formData)
-      console.log('success', formData)
+      const validatedData = formSchema.parse(formData)
+      console.log('validatedData', validatedData)
+
+      setFormData({ name: '', email: '', age: '' })
+      setErrors({})
     } catch (e) {
-      if (e instanceof Error) {
-        console.log(e.message)
-      }
+      if (e instanceof z.ZodError) setErrors(e.formErrors.fieldErrors)
     }
   }
 
   return (
     <>
-      <div>
-        <h1>Zod Gang</h1>
+      <div className="form-container">
+        <h1>Zod Form 'Tings</h1>
         <form onSubmit={handleSubmit}>
-          <div>
+          <div className="input-container">
             <label htmlFor="name">Name:</label>
             <input
               id="name'"
@@ -55,8 +75,11 @@ function App() {
               value={formData.name}
               onChange={handleChange}
             />
+            {errors.name &&
+              generateErrors('name', errors as Errors).map((error) => error)}
           </div>
-          <div>
+
+          <div className="input-container">
             <label htmlFor="email">Email:</label>
             <input
               id="email'"
@@ -65,18 +88,24 @@ function App() {
               value={formData.email}
               onChange={handleChange}
             />
+            {errors.email &&
+              generateErrors('email', errors as Errors).map((error) => error)}
           </div>
-          <div>
+
+          <div className="input-container">
             <label htmlFor="age">Age:</label>
             <input
               id="age'"
-              type="text"
+              type="number"
               name="age"
               value={formData.age}
               onChange={handleChange}
+              autoComplete="off"
             />
+            {errors.age &&
+              generateErrors('age', errors as Errors).map((error) => error)}
           </div>
-          <button type="submit" hidden />
+          <button type="submit">Submit</button>
         </form>
       </div>
     </>

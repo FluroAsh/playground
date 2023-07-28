@@ -14,6 +14,14 @@
   -webkit-text-size-adjust: 100%;
 }
 
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
   display: flex;
@@ -23,15 +31,61 @@ body {
 }
 
 h1 {
-  font-size: 3.2em;
+  font-size: 2.8em;
   line-height: 1.1;
+  margin-bottom: 12px;
 }
 
-form {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+/* Form */
+div.form-container {
+  max-width: 500px;
+  padding: 2em;
+  border-radius: 15px;
+  background-color: #00000090;
+  border: 2px solid #242424;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
 }
+
 div > label {
   margin-right: 5px;
+  margin-bottom: 2px;
+}
+
+p.error-message {
+  color: #ff2200;
+  font-size: 0.8em;
+  text-align: left;
+}
+
+button[type='submit'] {
+  margin-top: 10px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  background-color: #242424;
+  color: #fff;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Input */
+div.input-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.input-container > input:not([name='age']) {
+  width: 100%;
+}
+
+input {
+  height: 30px;
+  padding: 0 5px;
+}
+input[name='age'] {
+  width: 60px;
 }
