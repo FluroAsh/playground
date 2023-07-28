@@ -36,11 +36,7 @@ function App() {
     age: ''
   })
 
-  const [errors, setErrors] = useState<{
-    name?: string[]
-    email?: string[]
-    age?: string[]
-  }>({})
+  const [errors, setErrors] = useState<Partial<Errors>>({})
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
