@@ -10,7 +10,7 @@ const formSchema = z.object({
   email: z.string().email(ERRORS.email.invalid),
   age: z
     .string()
-    .regex(/^\d{1,2}$/, ERRORS.age.invalid)
+    .nonempty('Age is required')
     .refine((age) => {
       const ageNum = parseInt(age)
       return ageNum >= 18 && ageNum <= 99
@@ -21,10 +21,24 @@ type FormSchema = z.infer<typeof formSchema>
 type FormKeys = keyof FormSchema
 type Errors = Record<FormKeys, string[]>
 
-const generateErrors = (key: FormKeys, errors: Errors) => {
-  const errorMessages: React.ReactNode[] = []
-  errors[key].forEach((message) => {
-    errorMessages.push(<p className="error-message">{message}</p>)
+const generateErrors = (keys: Array<FormKeys>, fieldErrors: Errors) => {
+  // Using an object to store the error keys & JSX to render the error messages in the form
+  const errorMessages: { [key in FormKeys]: React.ReactNode } = {
+    name: undefined,
+    email: undefined,
+    age: undefined
+  }
+
+  keys.forEach((key, idx) => {
+    const fieldErrorMessage = fieldErrors?.[key]?.[0] // Only want the first (highest priority) error message
+
+    if (fieldErrorMessage) {
+      errorMessages[key] = (
+        <p key={idx} className="error-message">
+          {fieldErrorMessage}
+        </p>
+      )
+    }
   })
   return errorMessages
 }
@@ -36,7 +50,7 @@ function App() {
     age: ''
   })
 
-  const [errors, setErrors] = useState<Partial<Errors>>({})
+  const [errors, setErrors] = useState<ReturnType<typeof generateErrors> | null>(null)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -51,9 +65,13 @@ function App() {
       console.log('validatedData', validatedData)
 
       setFormData({ name: '', email: '', age: '' })
-      setErrors({})
+      setErrors(null)
     } catch (e) {
-      if (e instanceof z.ZodError) setErrors(e.formErrors.fieldErrors)
+      if (e instanceof z.ZodError) {
+        const zodErrors = e.formErrors.fieldErrors
+        const errors = generateErrors(['age', 'name', 'email'], zodErrors as Errors)
+        setErrors(errors)
+      }
     }
   }
 
@@ -61,6 +79,7 @@ function App() {
     <>
       <div className="form-container">
         <h1>Zod Form 'Tings</h1>
+
         <form onSubmit={handleSubmit}>
           <div className="input-container">
             <label htmlFor="name">Name:</label>
@@ -70,22 +89,23 @@ function App() {
               name="name"
               value={formData.name}
               onChange={handleChange}
+              placeholder="Full Name"
+              autoComplete="off"
             />
-            {errors.name &&
-              generateErrors('name', errors as Errors).map((error) => error)}
+            {errors?.name && errors.name}
           </div>
 
           <div className="input-container">
             <label htmlFor="email">Email:</label>
             <input
               id="email'"
-              type="text"
+              type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
+              placeholder="Enter your email address"
             />
-            {errors.email &&
-              generateErrors('email', errors as Errors).map((error) => error)}
+            {errors?.email && errors.email}
           </div>
 
           <div className="input-container">
@@ -97,9 +117,10 @@ function App() {
               value={formData.age}
               onChange={handleChange}
               autoComplete="off"
+              min="1"
+              max="99"
             />
-            {errors.age &&
-              generateErrors('age', errors as Errors).map((error) => error)}
+            {errors?.age && errors.age}
           </div>
           <button type="submit">Submit</button>
         </form>

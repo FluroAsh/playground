@@ -1,11 +1,13 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
-import { useEffect } from 'react'
+import type { NextPage } from "next"
+import Head from "next/head"
+import styles from "../styles/Home.module.css"
+import { useEffect } from "react"
 
 const Home: NextPage = () => {
   useEffect(() => {
-    fetch('/greeting', { method: 'GET' })
+    fetch("/greeting", {
+      method: "GET"
+    })
   }, [])
 
   return (
