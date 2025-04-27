@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { useAuth } from '@/hooks/useAuth'
+import { useAuth } from '@/hooks/use-auth'
 import { LoginButton, LogoutButton } from '@/components/auth/auth-buttons'
 import { UserProfile } from '@/components/auth/user-profile'
 
@@ -48,8 +48,8 @@ export default function Home() {
           <div className="mt-8 p-4 bg-blue-100 rounded-lg border border-blue-200">
             <h3 className="font-bold text-blue-900">Implementation Notes</h3>
             <ul className="list-disc pl-5 mt-2 text-sm text-blue-900">
-              <li>Auth0 is configured with placeholder credentials</li>
-              <li>Update domain and clientId in src/providers/Auth0Provider.tsx with your actual Auth0 values</li>
+              <li>Auth0 is not configured with credentials by default</li>
+              <li>Update domain and clientId in `.env` with your actual Auth0 values — refer to `.env.example`</li>
               <li>The login button will redirect to Auth0 for authentication</li>
               <li>After login, user information will be displayed on this page</li>
             </ul>
